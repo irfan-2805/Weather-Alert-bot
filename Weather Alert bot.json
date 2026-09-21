@@ -1,0 +1,257 @@
+{
+  "name": "Weather Alert bot",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 6
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        0,
+        0
+      ],
+      "id": "e711af30-f965-4d4d-9666-7fd166b1a24e",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "url": "https://api.openweathermap.org/data/2.5/weather",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "q",
+              "value": "Hyderabad"
+            },
+            {
+              "name": "appid",
+              "value": "d00fe11afaa6c6a901b876966893331a"
+            },
+            {
+              "name": "units",
+              "value": "metric"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        224,
+        0
+      ],
+      "id": "61df3881-4f2e-450c-9eac-f3da0426cd32",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "06972992-c847-46d6-a4ab-efa9363dba60",
+              "leftValue": "={{ $json.weather[0].main }}",
+              "rightValue": "Cloudy",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "1439036f-8717-46e4-8098-bacccf856d1b",
+              "leftValue": "={{ $json.weather[0].main }}",
+              "rightValue": "Thunderstorms",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "5a5c41c1-e08e-4a7f-a464-f309f96a5c30",
+              "leftValue": "={{ $json.weather[0].main }}",
+              "rightValue": "Drizzle",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "a3772137-651f-4f47-aa4e-2ad220541c5a",
+              "leftValue": "={{ $json.weather[0].main }}",
+              "rightValue": "Sunny",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "567e681b-e273-459c-8bb4-a591c4e0759b",
+              "leftValue": "={{ $json.weather[0].main }}",
+              "rightValue": "Rain",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        448,
+        0
+      ],
+      "id": "851ee2fa-313b-4ea4-a884-fc86018d4ba2",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "sendTo": "razamoghul0786@gmail.com",
+        "subject": "Weather Alert for you area",
+        "emailType": "text",
+        "message": "=Weather alert: {{ $json.weather[0].description }}, temp is {{ $json.main.temp }}°C. Feels like {{ $json.main.feels_like }}°C",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        672,
+        -96
+      ],
+      "id": "323689c1-06d9-4978-a431-5d36d46b6da7",
+      "name": "Send a message",
+      "webhookId": "a9d608b7-9d28-4f14-a2f1-fdd4beca405d",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "ZKrunvvU8HlYbixS",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "HTTP Request": [
+      {
+        "json": {
+          "coord": {
+            "lon": 78.4744,
+            "lat": 17.3753
+          },
+          "weather": [
+            {
+              "id": 804,
+              "main": "Clouds",
+              "description": "overcast clouds",
+              "icon": "04n"
+            }
+          ],
+          "base": "stations",
+          "main": {
+            "temp": 26.64,
+            "feels_like": 26.64,
+            "temp_min": 26.5,
+            "temp_max": 26.77,
+            "pressure": 1011,
+            "humidity": 79,
+            "sea_level": 1011,
+            "grnd_level": 945
+          },
+          "visibility": 10000,
+          "wind": {
+            "speed": 15.12,
+            "deg": 0,
+            "gust": 15.12
+          },
+          "clouds": {
+            "all": 100
+          },
+          "dt": 1790017748,
+          "sys": {
+            "type": 5,
+            "id": 50013091,
+            "country": "IN",
+            "sunrise": 1790037299,
+            "sunset": 1790080982
+          },
+          "timezone": 19800,
+          "id": 1269843,
+          "name": "Hyderabad",
+          "cod": 200
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "b74f887a-1a1e-4a16-908b-f3d52b6739ea",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "53ee719bbc1f192351e63320f814d861c595e09868a09b6d1e26673da3a1b1b0"
+  },
+  "nodeGroups": [],
+  "id": "CdT6QQp6DqVDQUVK",
+  "tags": []
+}

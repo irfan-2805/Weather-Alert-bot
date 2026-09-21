@@ -32,7 +32,7 @@
             },
             {
               "name": "appid",
-              "value": "d00fe11afaa6c6a901b876966893331a"
+              "value": "YOUR_OPENWEATHERMAP_API_KEY"
             },
             {
               "name": "units",
@@ -125,7 +125,7 @@
     },
     {
       "parameters": {
-        "sendTo": "razamoghul0786@gmail.com",
+        "sendTo": "your-email@example.com",
         "subject": "Weather Alert for you area",
         "emailType": "text",
         "message": "=Weather alert: {{ $json.weather[0].description }}, temp is {{ $json.main.temp }}°C. Feels like {{ $json.main.feels_like }}°C",
